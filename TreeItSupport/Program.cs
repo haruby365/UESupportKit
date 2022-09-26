@@ -24,7 +24,10 @@ internal class Program
             }
 
             ObjParser parser = new();
-            parser.Read(File.OpenRead(sourceFilePath));
+            using (Stream sourceStream = File.OpenRead(sourceFilePath))
+            {
+                parser.Read(sourceStream);
+            }
             if (!parser.IsSucceed)
             {
                 Console.WriteLine("Read failed. " + sourceFilePath);
@@ -53,7 +56,10 @@ internal class Program
             string sourceDir = Path.GetDirectoryName(sourceFilePath) ?? string.Empty;
             string sourceFilename = Path.GetFileNameWithoutExtension(sourceFilePath);
             string outputFilePath = Path.Combine(sourceDir, sourceFilename + "_modified.obj");
-            parser.Write(File.Create(outputFilePath), false);
+            using (Stream outputStream = File.Create(outputFilePath))
+            {
+                parser.Write(outputStream, false);
+            }
 
             Console.WriteLine(outputFilePath);
         }
